@@ -17,6 +17,7 @@ public class MatchHistoryMapper {
         dto.setAssists(matchHistory.getAssists());
         dto.setStarter(matchHistory.isStarter());
         dto.setRating(matchHistory.getRating());
+        dto.setCleanSheet(matchHistory.isCleanSheet());
         if (matchHistory.getTalent() != null) {
             dto.setTalentId(matchHistory.getTalent().getId());
         }
@@ -35,6 +36,7 @@ public class MatchHistoryMapper {
         matchHistory.setAssists(dto.getAssists());
         matchHistory.setStarter(dto.isStarter());
         matchHistory.setRating(dto.getRating());
+        matchHistory.setCleanSheet(dto.isCleanSheet());
         return matchHistory;
     }
 }

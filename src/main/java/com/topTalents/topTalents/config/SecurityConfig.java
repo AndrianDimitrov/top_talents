@@ -4,6 +4,7 @@ import com.topTalents.topTalents.security.CustomUserDetailsService;
 import com.topTalents.topTalents.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -56,12 +57,31 @@ public class SecurityConfig {
         http
                 .authenticationProvider(authProvider)
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+
+                        // TALENTS
+                        .requestMatchers(HttpMethod.GET, "/api/scouts/**")
+                        .hasAnyRole("TALENT", "SCOUT", "ADMIN")
+
+                        .requestMatchers("/api/talents/**",
+                                "/api/match-calendar/**",
+                                "/api/match-history/**")
+                        .hasAnyRole("TALENT", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/teams/**")
+                        .hasAnyRole("TALENT", "ADMIN")
+
+                        // SCOUTS
+                        .requestMatchers("/api/scouts/**")
+                        .hasAnyRole("SCOUT", "ADMIN")
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/match-calendar/**",
+                                "/api/match-history/**",
+                                "/api/teams/**")
+                        .hasAnyRole("SCOUT", "ADMIN")
+
+                        .anyRequest().hasRole("ADMIN")
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

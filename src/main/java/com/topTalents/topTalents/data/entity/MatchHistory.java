@@ -40,6 +40,9 @@ public class MatchHistory {
     private int assists;
 
     @Column(nullable = false)
+    private boolean cleanSheet;
+
+    @Column(nullable = false)
     private boolean isStarter;
 
     @Column(nullable = false)
