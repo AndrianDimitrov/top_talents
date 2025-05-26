@@ -25,6 +25,8 @@ public class MatchHistoryDTO {
     @Min(value = 0, message = "Assists cannot be negative")
     private int assists;
 
+    private boolean cleanSheet;
+
     @NotNull
     private boolean isStarter;
 
