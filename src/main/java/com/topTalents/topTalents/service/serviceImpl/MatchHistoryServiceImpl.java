@@ -29,19 +29,17 @@ public class MatchHistoryServiceImpl implements MatchHistoryService {
 
     @Override
     public MatchHistoryDTO createMatchHistory(MatchHistoryDTO dto) {
-        // Зареждаме Talent
         Talent talent = talentRepository.findById(dto.getTalentId())
                 .orElseThrow(() -> new RuntimeException("Talent not found with id: " + dto.getTalentId()));
 
-        // Мапваме DTO към entity
         MatchHistory matchHistory = MatchHistoryMapper.toEntity(dto);
         matchHistory.setTalent(talent);
 
-        // Изчисляваме рейтинга
         matchHistory.setRating(computeRating(talent.getPosition(), dto.getGoals(), dto.getAssists(), dto.isCleanSheet(), dto.isStarter()));
 
-        // Запазваме и връщаме DTO
         MatchHistory saved = matchHistoryRepository.save(matchHistory);
+
+        updateTalentAggregates(talent);
         return MatchHistoryMapper.toDTO(saved);
     }
 
@@ -50,7 +48,6 @@ public class MatchHistoryServiceImpl implements MatchHistoryService {
         MatchHistory existing = matchHistoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("MatchHistory not found with id: " + id));
 
-        // Обновяваме полета
         existing.setMatchDate(dto.getMatchDate());
         existing.setOpponentTeam(dto.getOpponentTeam());
         existing.setGoals(dto.getGoals());
@@ -58,12 +55,13 @@ public class MatchHistoryServiceImpl implements MatchHistoryService {
         existing.setStarter(dto.isStarter());
         existing.setCleanSheet(dto.isCleanSheet());
 
-        // Пресмятаме нов рейтинг
         existing.setRating(computeRating(existing.getTalent().getPosition(),
                 dto.getGoals(), dto.getAssists(), dto.isCleanSheet(), dto.isStarter()));
 
-        // Запазваме и връщаме DTO
         MatchHistory updated = matchHistoryRepository.save(existing);
+
+        updateTalentAggregates(updated.getTalent());
+
         return MatchHistoryMapper.toDTO(updated);
     }
 
@@ -125,5 +123,26 @@ public class MatchHistoryServiceImpl implements MatchHistoryService {
         }
 
         return rating;
+    }
+
+    private void updateTalentAggregates(Talent talent) {
+        List<MatchHistory> history = matchHistoryRepository.findByTalent(talent);
+
+        int matchesPlayed = history.size();
+
+        int totalGoals = history.stream().mapToInt(MatchHistory::getGoals).sum();
+        int totalAssists = history.stream().mapToInt(MatchHistory::getAssists).sum();
+
+        int totalCleanSheets = 0;
+        if (talent.getPosition() == Position.GOALKEEPER) {
+            totalCleanSheets = (int) history.stream().filter(MatchHistory::isCleanSheet).count();
+        }
+
+        talent.setMatchesPlayed(matchesPlayed);
+        talent.setGoals(totalGoals);
+        talent.setAssists(totalAssists);
+        talent.setCleanSheets(totalCleanSheets);
+
+        talentRepository.save(talent);
     }
 }

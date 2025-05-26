@@ -61,6 +61,8 @@ public class Talent {
 
     private int cleanSheets;
 
+    private String photoPath;
+
     @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchHistory> matchHistory = new ArrayList<>();
 }

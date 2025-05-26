@@ -1,7 +1,10 @@
 package com.topTalents.topTalents.data.mapper;
 
 import com.topTalents.topTalents.data.dto.TalentDTO;
+import com.topTalents.topTalents.data.entity.MatchHistory;
 import com.topTalents.topTalents.data.entity.Talent;
+
+import java.util.stream.Collectors;
 
 public class TalentMapper {
     public static TalentDTO toDTO(Talent talent) {
@@ -14,6 +17,7 @@ public class TalentMapper {
         dto.setLastName(talent.getLastName());
         dto.setAge(talent.getAge());
         dto.setPosition(talent.getPosition() != null ? talent.getPosition().name() : null);
+        dto.setPhotoPath(talent.getPhotoPath());
         if (talent.getUser() != null) {
             dto.setUserId(talent.getUser().getId());
         }
@@ -21,8 +25,17 @@ public class TalentMapper {
             dto.setTeamId(talent.getTeam().getId());
             dto.setTeamName(talent.getTeam().getName());
         }
-        //ToDo this for getTalentAllMatchHistory
-        // dto.setMatchHistoryIds(talent.getMatchHistory().stream().map(mh -> mh.getId()).collect(Collectors.toList()));
+
+        dto.setMatchesPlayed(talent.getMatchesPlayed());
+        dto.setGoals(talent.getGoals());
+        dto.setAssists(talent.getAssists());
+        dto.setCleanSheets(talent.getCleanSheets());
+
+        dto.setMatchHistoryIds(
+                talent.getMatchHistory().stream()
+                        .map(MatchHistory::getId)
+                        .collect(Collectors.toList())
+        );
         return dto;
     }
 
@@ -35,6 +48,7 @@ public class TalentMapper {
         talent.setFirstName(dto.getFirstName());
         talent.setLastName(dto.getLastName());
         talent.setAge(dto.getAge());
+        talent.setPhotoPath(dto.getPhotoPath());
         if (dto.getPosition() != null) {
             talent.setPosition(Enum.valueOf(com.topTalents.topTalents.data.enums.Position.class, dto.getPosition()));
         }
