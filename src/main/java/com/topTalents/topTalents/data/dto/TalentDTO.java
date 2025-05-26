@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class TalentDTO {
     private Long id;
@@ -42,6 +44,7 @@ public class TalentDTO {
     @Min(value = 0, message = "Clean sheets cannot be negative")
     private int cleanSheets;
 
-    //TODO for talent getAllMatchHistory
-    // private List<Long> matchHistoryIds;
+    private String photoPath;
+
+    private List<Long> matchHistoryIds;
 }

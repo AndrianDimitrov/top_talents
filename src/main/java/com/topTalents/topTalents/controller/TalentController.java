@@ -1,6 +1,7 @@
 package com.topTalents.topTalents.controller;
 
 import com.topTalents.topTalents.data.dto.TalentDTO;
+import com.topTalents.topTalents.service.FileStorageService;
 import com.topTalents.topTalents.service.serviceImpl.TalentServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +14,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/talents")
 public class TalentController {
 
     private final TalentServiceImpl talentService;
+    private final FileStorageService fileStorageService;
 
     @Autowired
-    public TalentController(TalentServiceImpl talentService) {
+    public TalentController(TalentServiceImpl talentService, FileStorageService fileStorageService) {
         this.talentService = talentService;
+        this.fileStorageService = fileStorageService;
     }
 
     @PostMapping
@@ -49,5 +57,21 @@ public class TalentController {
     public ResponseEntity<Void> deleteTalent(@PathVariable Long id) {
         talentService.deleteTalent(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/photo")
+    public ResponseEntity<String> uploadPhoto(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) throws IOException {
+
+        String filename = fileStorageService.storeImage(file);
+        talentService.updatePhoto(id, filename);
+
+        String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/uploads/")
+                .path(filename)
+                .toUriString();
+
+        return ResponseEntity.ok(imageUrl);
     }
 }

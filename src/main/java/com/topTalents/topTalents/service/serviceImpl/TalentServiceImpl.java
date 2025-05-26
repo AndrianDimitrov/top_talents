@@ -83,4 +83,12 @@ public class TalentServiceImpl implements TalentService {
         }
         talentRepository.deleteById(id);
     }
+
+    @Override
+    public void updatePhoto(Long talentId, String filename) {
+        Talent talent = talentRepository.findById(talentId)
+                .orElseThrow(() -> new RuntimeException("Talent not found with id: " + talentId));
+        talent.setPhotoPath(filename);
+        talentRepository.save(talent);
+    }
 }

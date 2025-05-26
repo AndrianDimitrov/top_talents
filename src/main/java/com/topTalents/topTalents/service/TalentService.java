@@ -11,4 +11,6 @@ public interface TalentService {
     TalentDTO getTalentById(Long id);
 
     void deleteTalent(Long id);
+
+    void updatePhoto(Long talentId, String filename);
 }
