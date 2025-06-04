@@ -53,6 +53,12 @@ public class TalentController {
         return ResponseEntity.ok(talentDTO);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<TalentDTO> getTalentByUserId(@PathVariable Long userId) {
+        TalentDTO talentDTO = talentService.getTalentByUserId(userId);
+        return ResponseEntity.ok(talentDTO);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTalent(@PathVariable Long id) {
         talentService.deleteTalent(id);

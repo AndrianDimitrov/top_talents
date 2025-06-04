@@ -48,6 +48,12 @@ public class ScoutController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ScoutDTO> getTalentByUserId(@PathVariable Long userId) {
+        ScoutDTO scoutDTO = scoutService.getScoutByUserId(userId);
+        return ResponseEntity.ok(scoutDTO);
+    }
+
     @GetMapping
     public ResponseEntity<List<ScoutDTO>> getAllScouts() {
         List<ScoutDTO> scouts = scoutService.getAllScouts();
