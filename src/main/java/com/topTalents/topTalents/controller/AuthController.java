@@ -63,7 +63,13 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(req.email(), req.password())
         );
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        String token = jwtUtil.generateToken(userDetails);
+
+        User userEntity = userRepo.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userDetails.getUsername()));
+        Long userId = userEntity.getId();
+
+        String token = jwtUtil.generateToken(userDetails, userId);
+
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }

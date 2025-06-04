@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TalentRepository extends JpaRepository<Talent, Long> {
@@ -20,4 +21,6 @@ public interface TalentRepository extends JpaRepository<Talent, Long> {
     List<Talent> findByTeam(Team team);
 
     List<Talent> findByPosition(Position position);
+
+    Optional<Talent> findByUser_Id(Long userId);
 }

@@ -110,6 +110,13 @@ public class ScoutServiceImpl implements ScoutService {
     }
 
     @Override
+    public ScoutDTO getScoutByUserId (Long id) {
+        Scout scout = scoutRepository.findByUser_Id(id)
+                .orElseThrow(() -> new RuntimeException("Scout not found with id: " + id));
+        return ScoutMapper.toDTO(scout);
+    }
+
+    @Override
     public void deleteScout(Long id) {
         if (!scoutRepository.existsById(id)) {
             throw new RuntimeException("Scout not found with id: " + id);

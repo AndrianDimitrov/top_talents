@@ -77,6 +77,13 @@ public class TalentServiceImpl implements TalentService {
     }
 
     @Override
+    public TalentDTO getTalentByUserId(Long userId) {
+        Talent talent = talentRepository.findByUser_Id(userId)
+                .orElseThrow(() -> new RuntimeException("Talent not found for userId: " + userId));
+        return TalentMapper.toDTO(talent);
+    }
+
+    @Override
     public void deleteTalent(Long id) {
         if (!talentRepository.existsById(id)) {
             throw new RuntimeException("Talent not found with id: " + id);

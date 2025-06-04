@@ -20,4 +20,6 @@ public interface ScoutService {
     List<ScoutDTO> getAllScouts();
 
     void deleteScout(Long id);
+
+    ScoutDTO getScoutByUserId(Long userId);
 }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ScoutRepository extends JpaRepository<Scout, Long> {
@@ -14,4 +15,6 @@ public interface ScoutRepository extends JpaRepository<Scout, Long> {
     List<Scout> findByLastNameIgnoreCase(String lastName);
 
     List<Scout> findByFirstNameIgnoreCaseAndLastNameIgnoreCase(String firstName, String lastName);
+
+    Optional<Scout> findByUser_Id(Long userId);
 }
