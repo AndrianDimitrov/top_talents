@@ -13,6 +13,9 @@ import com.topTalents.topTalents.service.TalentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class TalentServiceImpl implements TalentService {
 
@@ -81,6 +84,14 @@ public class TalentServiceImpl implements TalentService {
         Talent talent = talentRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new RuntimeException("Talent not found for userId: " + userId));
         return TalentMapper.toDTO(talent);
+    }
+
+    @Override
+    public List<TalentDTO> getAllTalents() {
+        return talentRepository.findAll()
+                .stream()
+                .map(TalentMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

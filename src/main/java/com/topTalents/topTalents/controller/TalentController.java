@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/talents")
@@ -45,6 +46,12 @@ public class TalentController {
                                                   @Valid @RequestBody TalentDTO talentDTO) {
         TalentDTO updatedTalent = talentService.updateTalent(id, talentDTO);
         return ResponseEntity.ok(updatedTalent);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TalentDTO>> getAllTalents() {
+        List<TalentDTO> talents = talentService.getAllTalents();
+        return ResponseEntity.ok(talents);
     }
 
     @GetMapping("/{id}")

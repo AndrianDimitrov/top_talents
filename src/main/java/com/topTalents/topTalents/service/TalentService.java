@@ -2,6 +2,8 @@ package com.topTalents.topTalents.service;
 
 import com.topTalents.topTalents.data.dto.TalentDTO;
 
+import java.util.List;
+
 public interface TalentService {
 
     TalentDTO createTalent(TalentDTO talentDTO);
@@ -15,4 +17,6 @@ public interface TalentService {
     void updatePhoto(Long talentId, String filename);
 
     TalentDTO getTalentByUserId(Long userId);
+
+    List<TalentDTO> getAllTalents();
 }
