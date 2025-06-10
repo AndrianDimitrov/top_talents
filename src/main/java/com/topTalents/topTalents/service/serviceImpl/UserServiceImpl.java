@@ -2,10 +2,12 @@ package com.topTalents.topTalents.service.serviceImpl;
 
 import com.topTalents.topTalents.data.dto.UserDTO;
 import com.topTalents.topTalents.data.entity.User;
+import com.topTalents.topTalents.data.enums.UserType;
 import com.topTalents.topTalents.data.mapper.UserMapper;
 import com.topTalents.topTalents.repository.UserRepository;
 import com.topTalents.topTalents.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -47,10 +51,20 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
+        // Update email if present
         existingUser.setEmail(userDTO.getEmail());
 
+        // Update password only if provided
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
+            String encoded = passwordEncoder.encode(userDTO.getPassword());
+            existingUser.setPassword(encoded);
+        }
+
+        // Update userType if present
         if (userDTO.getUserType() != null) {
-            existingUser.setUserType(com.topTalents.topTalents.data.enums.UserType.valueOf(userDTO.getUserType()));
+            existingUser.setUserType(
+                    UserType.valueOf(userDTO.getUserType().toUpperCase())
+            );
         }
 
         User updatedUser = userRepository.save(existingUser);
