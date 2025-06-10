@@ -69,6 +69,7 @@ public class SecurityConfig {
                         // Public endpoints:
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/**").permitAll()
 
                         // TALENTS:
                         // 1) TALENT, SCOUT, or ADMIN may GET any talent:
