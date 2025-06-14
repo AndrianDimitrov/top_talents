@@ -51,16 +51,13 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-        // Update email if present
         existingUser.setEmail(userDTO.getEmail());
 
-        // Update password only if provided
         if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
             String encoded = passwordEncoder.encode(userDTO.getPassword());
             existingUser.setPassword(encoded);
         }
 
-        // Update userType if present
         if (userDTO.getUserType() != null) {
             existingUser.setUserType(
                     UserType.valueOf(userDTO.getUserType().toUpperCase())
