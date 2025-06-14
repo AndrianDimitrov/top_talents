@@ -31,7 +31,7 @@ public class MatchCalendarServiceImpl implements MatchCalendarService {
     public MatchCalendarDTO createMatchCalendar(MatchCalendarDTO dto) {
         Team homeTeam = teamRepository.findById(dto.getHomeTeamId())
                 .orElseThrow(() -> new RuntimeException("Home team not found with id: " + dto.getHomeTeamId()));
-        // Зареждаме гостуващия отбор
+
         Team guestTeam = teamRepository.findById(dto.getGuestTeamId())
                 .orElseThrow(() -> new RuntimeException("Guest team not found with id: " + dto.getGuestTeamId()));
 
